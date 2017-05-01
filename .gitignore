@@ -1,0 +1,8 @@
+.DS_Store
+*.pyc
+/bin
+/report/auto
+/report/report.aux
+/report/report.log
+/report/out
+
