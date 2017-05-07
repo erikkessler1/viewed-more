@@ -10,21 +10,46 @@ import urllib
     #grab each video title, view count, and
 
 def grabYTViews():
-    jsonfile = open('exportUploaders.json')
+    #jsonfile = open('exportUploaders.json')
     import urllib.request
     import html.parser as htmlparser
     parser = htmlparser.HTMLParser()
-    
+
+    vidstatsfront = "https://vidstatsx.com/youtube-top-"
+    vidstatsback = "-most-subscribed-channels"
+    topx = [200, 500, 750, 1000, 1250, 1500, 1750, 2000]
+
+    user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
+    headers={'User-Agent':user_agent,}
 
 
-    youtubers = {}
+    youtube_ids= []
 
-    for line in jsonfile:
-        data = json.loads(line)
-        uploader = data["uploader"]
-        youtubers[uploader] = []
+    for x in topx:
+        link = vidstatsfront + str(x) + vidstatsback
+        #grab url
+        request=urllib.request.Request(link,None,headers)
+        topvideos = urllib.request.urlopen(request)
+        page = topvideos.read().decode("utf-8")
+        table_index = page.index('table id="youtube-top-')
+        end_table = page.index("</table>", table_index)
+        try:
+            link_index = page.index("www.youtube.com", table_index)
+        except ValueError:
+            link_index = None
+        while link_index != None and link_index < end_table:
+            newlink = page[link_index:page.index('"', link_index)]
+            youtube_ids.append(newlink)
+            link_index = page.index('www.youtube.com', link_index + 20)
 
-        videos_url = "http://www.youtube.com/user/" + uploader + "/videos"
+
+    for url in youtube_ids:
+        # uploader = data["uploader"]
+        # print(uploader)
+        # youtubers[uploader] = []
+        #
+
+        videos_url = url + "/videos"
         response = urllib.request.urlopen(videos_url)
         html = response.read().decode("utf-8")
         try:
@@ -36,10 +61,11 @@ def grabYTViews():
 
             starttitle = html.index("title=", content_index)
             endtitle = html.index('"', starttitle + 7)
-            title = html[starttitle + 7:endtitle]
+            title = parser.unescape(html[starttitle + 7:endtitle])
             li_index = html.index("<li>", endtitle)
             views = html[li_index+4:html.index(" ", li_index)]
             youtubers[uploader].append(tuple([title, views]))
+
 
             try:
                 content_index = html.index("yt-lockup-content", endtitle)
