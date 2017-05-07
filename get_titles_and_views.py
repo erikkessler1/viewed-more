@@ -42,7 +42,8 @@ def grabYTViews():
             youtube_ids.append(newlink)
             link_index = page.index('www.youtube.com', link_index + 20)
 
-
+    #return youtube_ids
+    
     for url in youtube_ids:
         # uploader = data["uploader"]
         # print(uploader)
