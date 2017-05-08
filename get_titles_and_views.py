@@ -55,7 +55,7 @@ def grab_videos(uploader):
 ### Main ###
 
 if len(sys.argv) < 3:
-    print("Specify an input file with uploader ids. Useage:\n\tget_title_and_views.py <input_file> <out_filename>")
+    print("Specify an input file with uploader ids and output filename. Usage:\n\tget_title_and_views.py <input_file> <out_filename>")
     exit()
 
 with open(sys.argv[1]) as uploaders, open(sys.argv[2], 'w+') as output:
