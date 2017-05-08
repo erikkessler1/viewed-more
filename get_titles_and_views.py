@@ -1,6 +1,7 @@
 import sys
 import json
 import re
+from csv import DictWriter
 from urllib import request
 
 """ A tool for getting video titles and view counts for uploaders.
@@ -59,10 +60,12 @@ if len(sys.argv) < 3:
     exit()
 
 with open(sys.argv[1]) as uploaders, open(sys.argv[2], 'w+') as output:
-    output.write("uploader,title,views\n")
+    writer = DictWriter(output, fieldnames=['uploader', 'title', 'views'])
+    writer.writeheader()
     for uploader in uploaders:
         uploader = uploader.strip()
         for title, views in grab_videos(uploader):
-            output.write("{},{},{}\n".format(uploader, title, views))
+            writer.writerow({'uploader': uploader, 'title': title, 'views': views})
+
     
 
