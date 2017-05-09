@@ -9,6 +9,9 @@ import urllib
     #query youtube.
     #grab each video title, view count, and
 
+if __name__ == "__main__":
+    grabYTViews()
+
 def grabYTViews():
     #jsonfile = open('exportUploaders.json')
     import urllib.request
@@ -43,7 +46,7 @@ def grabYTViews():
             link_index = page.index('www.youtube.com', link_index + 20)
 
     #return youtube_ids
-    
+
     for url in youtube_ids:
         # uploader = data["uploader"]
         # print(uploader)
