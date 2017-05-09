@@ -28,12 +28,12 @@ def get_video_info(html, index):
     starttitle = html.index("title=", index)
     endtitle = html.index('"', starttitle + 7)
     title = html[starttitle + 7:endtitle]
-    
+
     li_index = html.index("<li>", endtitle)
     views = int(html[li_index+4:html.index(" ", li_index)].replace(',',''))
-    
+
     return (title, views)
-    
+
 def grabYoutubers():
     #jsonfile = open('exportUploaders.json')
     import urllib.request
@@ -67,12 +67,21 @@ def grabYoutubers():
             youtube_ids.append(newlink)
             link_index = page.index('www.youtube.com', link_index + 20)
 
-    return youtube_ids
     
+    from csv import DictWriter
+
+    with open("youtubers.csv", 'w+') as output:
+        writer = DictWriter(output, fieldnames=['url'])
+        writer.writeheader()
+        for id in youtube_ids:
+            id = id.strip()
+
+            writer.writerow({'url': id})
+
+    return youtube_ids
 
 
-
-    """Fetch the uploader's video page (http://www.youtube.com/user/{uploader}/videos) and 
+    """Fetch the uploader's video page (http://www.youtube.com/user/{uploader}/videos) and
     extract videos from the html response"""
 def grab_videos(uploader):
     """ Get all the title and view counts for all videos on an uploader's page
@@ -81,7 +90,7 @@ def grab_videos(uploader):
     Returns:
       [(string, int)]: A list of tuples of title and view count.
     """
-    
+
     videos_url = "http://www.youtube.com/user/" + uploader + "/videos"
     response = request.urlopen(videos_url)
     html = response.read().decode("utf-8")
@@ -103,6 +112,3 @@ with open(sys.argv[1]) as uploaders, open(sys.argv[2], 'w+') as output:
         uploader = uploader.strip()
         for title, views in grab_videos(uploader):
             writer.writerow({'uploader': uploader, 'title': title, 'views': views})
-
-    
-
