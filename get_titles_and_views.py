@@ -4,10 +4,10 @@ import re
 from csv import DictWriter
 from urllib import request
 
-""" A tool for getting video titles and view counts for uploaders.
+""" A tool for getting video titles, view counts, and age for uploaders.
 
 Take an input list of YouTube uploader ids and map it to a csv file
-where each row is a video with the uploader, title, and view count.
+where each row is a video with the uploader, title, view count, and age.
 
 
 Usage:
@@ -22,7 +22,7 @@ def get_video_info(html, index):
       html (string): The html document to extract info from.
       index (int): Location in the document where the video infomation is located.
     Returns:
-      (string, int): A tuple of the video title and view count.
+      (string, int, age): A tuple of the video title, view count, and age.
 
     """
     starttitle = html.index("title=", index)
@@ -32,7 +32,10 @@ def get_video_info(html, index):
     li_index = html.index("<li>", endtitle)
     views = int(html[li_index+4:html.index(" ", li_index)].replace(',',''))
 
-    return (title, views)
+    li_index = html.index("<li>", li_index + 4)
+    age = html[li_index+4:html.index(" ago", li_index)]
+    
+    return (title, views, age)
 
 
 
@@ -44,7 +47,7 @@ def grab_videos(uploader):
     Args:
       uploader (string): ID of the uploader.
     Returns:
-      [(string, int)]: A list of tuples of title and view count.
+      [(string, int, string)]: A list of tuples of title, view count, and age.
     """
 
     videos_url = "http://www.youtube.com/user/" + uploader + "/videos"
@@ -62,9 +65,9 @@ if len(sys.argv) < 3:
     exit()
 
 with open(sys.argv[1]) as uploaders, open(sys.argv[2], 'w+') as output:
-    writer = DictWriter(output, fieldnames=['uploader', 'title', 'views'])
+    writer = DictWriter(output, fieldnames=['uploader', 'title', 'views', 'age'])
     writer.writeheader()
     for uploader in uploaders:
         uploader = uploader.strip()
-        for title, views in grab_videos(uploader):
-            writer.writerow({'uploader': uploader, 'title': title, 'views': views})
+        for title, views, age in grab_videos(uploader):
+            writer.writerow({'uploader': uploader, 'title': title, 'views': views, 'age': age})
