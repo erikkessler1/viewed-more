@@ -14,13 +14,14 @@ Usage:
 
 """
 
-def create_video_dict(uploader, title, views, age, mean, sd):
+def create_video_dict(uploader, vid_id, title, views, age, mean, sd):
     """ Creates a dict with all the infomation for the video.
 
     Used to create a row in the CSV table.
     """
     return {
         'uploader': uploader,
+        'id': vid_id,
         'title': title,
         'views': views,
         'age': age,
@@ -38,11 +39,11 @@ def create_uploader_dict(reader):
     Args:
       reader (DictReader): CSV reader with headser for uploader, title, and views
     Returns:
-      {string: [(string, int, string)]}: Dict from uploader to list of video title, views, age tuples.
+      {string: [(string, string, int, string)]}: Dict from uploader to list of video id, title, views, age tuples.
     """
     uploader_dict = defaultdict(list)
     for row in reader:
-        uploader_dict[row["uploader"]].append((row["title"], int(row["views"]), row["age"]))
+        uploader_dict[row["uploader"]].append((row["id"], row["title"], int(row["views"]), row["age"]))
     return uploader_dict
 
 ### Main ###
@@ -52,12 +53,12 @@ if len(sys.argv) < 3:
     exit()
 
 with open(sys.argv[1]) as titles_views, open(sys.argv[2], 'w+') as output:
-    writer = DictWriter(output, fieldnames=['uploader', 'title', 'views', 'age', 'uploader_mean', 'uploader_sd', 'devs'])
+    writer = DictWriter(output, fieldnames=['uploader', 'id', 'title', 'views', 'age', 'uploader_mean', 'uploader_sd', 'devs'])
     writer.writeheader()
     
     reader = DictReader(titles_views)    
     uploader_dict = create_uploader_dict(reader)
     for uploader, videos in uploader_dict.items():
-        mean, sd = compute_mean_sd([views for _, views, _ in videos])
-        for title, views, age in videos:
-            writer.writerow(create_video_dict(uploader, title, views, age, mean, sd))
+        mean, sd = compute_mean_sd([views for _, _, views, _ in videos])
+        for vid_id, title, views, age in videos:
+            writer.writerow(create_video_dict(uploader, vid_id, title, views, age, mean, sd))
