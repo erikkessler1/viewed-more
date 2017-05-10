@@ -1,0 +1,6 @@
+Top 2000 channels
+Removed 139 'VEVO' channels
+Removed 244 non-user channels
+-----------------------------
+1617 user channels
+
