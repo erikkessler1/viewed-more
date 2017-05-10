@@ -25,17 +25,20 @@ def get_video_info(html, index):
       (string, int, age): A tuple of the video title, view count, and age.
 
     """
-    starttitle = html.index("title=", index)
-    endtitle = html.index('"', starttitle + 7)
-    title = html[starttitle + 7:endtitle]
+    try:
+        starttitle = html.index("title=", index)
+        endtitle = html.index('"', starttitle + 7)
+        title = html[starttitle + 7:endtitle]
 
-    li_index = html.index("<li>", endtitle)
-    views = int(html[li_index+4:html.index(" ", li_index)].replace(',',''))
+        li_index = html.index("<li>", endtitle)
+        views = int(html[li_index+4:html.index(" ", li_index)].replace(',',''))
 
-    li_index = html.index("<li>", li_index + 4)
-    age = html[li_index+4:html.index(" ago", li_index)]
+        li_index = html.index("<li>", li_index + 4)
+        age = html[li_index+4:html.index(" ago", li_index)]
     
-    return (title, views, age)
+        return (title, views, age)
+    except:
+        return None
 
 
 
@@ -55,7 +58,7 @@ def grab_videos(uploader):
     html = response.read().decode("utf-8")
 
     content_indicies = [m.start() for m in re.finditer('yt-lockup-content', html)]
-    return [get_video_info(html, index) for index in content_indicies]
+    return filter(None, [get_video_info(html, index) for index in content_indicies])
 
 
 ### Main ###
@@ -67,7 +70,11 @@ if len(sys.argv) < 3:
 with open(sys.argv[1]) as uploaders, open(sys.argv[2], 'w+') as output:
     writer = DictWriter(output, fieldnames=['uploader', 'title', 'views', 'age'])
     writer.writeheader()
+
+    count = 0
     for uploader in uploaders:
         uploader = uploader.strip()
         for title, views, age in grab_videos(uploader):
             writer.writerow({'uploader': uploader, 'title': title, 'views': views, 'age': age})
+        count += 1
+        print("{} complete".format(count))
