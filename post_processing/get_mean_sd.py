@@ -3,7 +3,7 @@ from csv import DictReader, DictWriter
 from collections import defaultdict
 import statistics as stats
 
-""" A tool for finding how many SD away from an uploader's mean 
+""" A tool for finding how many SD away from an uploader's mean
     view count a certain video is.
 
 Takes a CSV file with headers uploader, title, and views and
@@ -55,8 +55,8 @@ if len(sys.argv) < 3:
 with open(sys.argv[1]) as titles_views, open(sys.argv[2], 'w+') as output:
     writer = DictWriter(output, fieldnames=['uploader', 'id', 'title', 'views', 'age', 'uploader_mean', 'uploader_sd', 'devs'])
     writer.writeheader()
-    
-    reader = DictReader(titles_views)    
+
+    reader = DictReader(titles_views)
     uploader_dict = create_uploader_dict(reader)
     for uploader, videos in uploader_dict.items():
         mean, sd = compute_mean_sd([views for _, _, views, _ in videos])
