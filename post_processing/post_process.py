@@ -11,13 +11,15 @@ with open(sys.argv[1]) as source, open(sys.argv[2], 'w+') as output:
     for line in reader:
         #set each title to be html parsed.
         line[2] = html.unescape(line[2])
+
         try :
 
-            if  detect(line[2])== 'en':
+            if  detect(line[2])== 'en' and line[4].split()[1] not in set(["hour", "day"]):
                 print(line)
                 writer.writerow({'uploader' : line[0],'id': line[1],
                 'title': line[2],'views': line[3],'age': line[4]})
+
             else:
-                print("Incorrect language detected")
+                print("Incorrect language detected or too early")
         except:
             continue

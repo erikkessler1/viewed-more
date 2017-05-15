@@ -59,6 +59,8 @@ with open(sys.argv[1]) as titles_views, open(sys.argv[2], 'w+') as output:
     reader = DictReader(titles_views)
     uploader_dict = create_uploader_dict(reader)
     for uploader, videos in uploader_dict.items():
-        mean, sd = compute_mean_sd([views for _, _, views, _ in videos])
-        for vid_id, title, views, age in videos:
-            writer.writerow(create_video_dict(uploader, vid_id, title, views, age, mean, sd))
+        num_videos = len([views for _, _, views, _ in videos])
+        if num_videos > 5:
+            mean, sd = compute_mean_sd([views for _, _, views, _ in videos])
+            for vid_id, title, views, age in videos:
+                writer.writerow(create_video_dict(uploader, vid_id, title, views, age, mean, sd))
