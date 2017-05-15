@@ -9,9 +9,6 @@ with open(sys.argv[1]) as source, open(sys.argv[2], 'w+') as output:
     lines = open("videos_raw_all.csv")
     reader = csv.reader(lines)
     for line in reader:
-        #set each title to be html parsed.
-        line[2] = html.unescape(line[2])
-
         try :
 
             if  detect(line[2])== 'en' and line[4].split()[1] not in set(["hour", "day"]):
