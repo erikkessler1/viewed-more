@@ -1,0 +1,21 @@
+\begin{thebibliography}{1}
+
+\bibitem{youmna+ardon+carlsson+eager+mahanti:12}
+{\sc Borghol, Y., Ardon, S., Carlsson, N., Eager, D., and Mahanti, A.}
+\newblock The untold story of the clones: Content-agnostic factors that impact
+  youtube video popularity.
+\newblock In {\em Proceedings of KDD\/} (2012).
+
+\bibitem{himabindu+mcauley+leskovec:13}
+{\sc Lakkaraju, H., McAuley, J., and Leskovec, J.}
+\newblock What’s in a name? understanding the interplay between titles,
+  content, and communities in social media.
+\newblock In {\em Proceedings of ICWSM\/} (2013).
+
+\bibitem{tan+lee+pang:14}
+{\sc Tan, C., Lee, L., and Pang, B.}
+\newblock The effect of wording on message propagation: Topic- and
+  author-controlled natural experiments on twitter.
+\newblock In {\em Proceedings of ACL\/} (2014).
+
+\end{thebibliography}
