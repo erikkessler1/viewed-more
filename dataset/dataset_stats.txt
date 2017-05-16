@@ -1,0 +1,16 @@
+Top 2000 channels
+Removed 139 'VEVO' channels
+Removed 244 non-user channels
+-----------------------------
+1617 user channels
+
+
+$ python get_mean_sd.py videos_raw_all.csv mean_sd_data.csv
+  -> 1609 uploaders processed | 48114 videos written
+
+$ python post_process.py mean_sd_data.csv dataset_all_langs.csv
+  -> 45414 written | 2700 removed
+
+$ python post_process.py -l mean_sd_data.csv dataset_only_english.csv
+  -> 27998 written | 20116 removed
+

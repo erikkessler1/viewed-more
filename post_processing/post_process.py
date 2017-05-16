@@ -1,22 +1,55 @@
-import csv, html
-from langdetect import detect
-import sys
-from csv import DictWriter
+import sys, html, argparse, logging
+from csv import DictWriter, DictReader
+from polyglot.detect import Detector as LanguageDetector
 
-with open(sys.argv[1]) as source, open(sys.argv[2], 'w+') as output:
-    writer = DictWriter(output, fieldnames=['uploader','id','title','views','age' ])
+""" Tool for filtering out titles based on language and age.
+
+Filters out videos based on on langauge (optional) and age.
+Videos less than 2 days old are removed, and non-english videos are removed.
+
+Useage:
+  python post_process.py [-l] <input_file> <output_file>
+
+"""
+
+# Arguments
+parser = argparse.ArgumentParser(description='Filter video files based on age and location.')
+parser.add_argument('input', metavar='in', help='input file')
+parser.add_argument('output', metavar='out', help='output file')
+parser.add_argument('-l', action='store_const', default=False, const=True, help='remove non-english titles')
+
+args = parser.parse_args()
+
+logging.disable(logging.CRITICAL)
+
+# Excludes any videos newer than 2 days
+excluded_ages = set(["hour", "hours", "day", "minutes", "minute"])
+
+with open(args.input) as source, open(args.output, 'w+') as output:
+    writer = DictWriter(output, fieldnames=['uploader', 'id', 'title', 'views', 'age', 'uploader_mean', 'uploader_sd', 'sds'])
     writer.writeheader()
-    lines = open("videos_raw_all.csv")
-    reader = csv.reader(lines)
-    for line in reader:
-        try :
 
-            if  detect(line[2])== 'en' and line[4].split()[1] not in set(["hour", "day"]):
-                print(line)
-                writer.writerow({'uploader' : line[0],'id': line[1],
-                'title': line[2],'views': line[3],'age': line[4]})
+    # Iterate through all the videos
+    removed = 0
+    written = 0
+    for video in DictReader(source):
+        video["title"] = html.unescape(video["title"])
+        upload_age = video["age"].split()[1]
 
-            else:
-                print("Incorrect language detected or too early")
-        except:
+        # Check that old enough
+        if upload_age in excluded_ages:
+            removed += 1
             continue
+
+        if args.l:
+            language = LanguageDetector(video["title"], quiet=True)
+
+            # Check language is reliable and english
+            if not language.reliable or language.language.code != 'en':
+                removed += 1
+                continue
+            
+        writer.writerow(video)
+        written += 1
+
+    print("Processing Complete: {} written | {} removed".format(written, removed))

@@ -1,4 +1,4 @@
-import sys
+import sys, argparse
 from csv import DictReader, DictWriter
 from collections import defaultdict
 import statistics as stats
@@ -14,20 +14,21 @@ Usage:
 
 """
 
-def create_video_dict(uploader, vid_id, title, views, age, mean, sd):
+def create_video_dict(uploader, mean, sd, video):
     """ Creates a dict with all the infomation for the video.
 
     Used to create a row in the CSV table.
     """
+    id, title, views, age = video
     return {
         'uploader': uploader,
-        'id': vid_id,
+        'id': id,
         'title': title,
         'views': views,
         'age': age,
         'uploader_mean': "{0:.2f}".format(mean),
         'uploader_sd': "{0:.2f}".format(sd),
-        'devs': "{0:.2f}".format((views - mean)/sd)
+        'sds': "{0:.2f}".format((views - mean)/sd)
     }
 
 def compute_mean_sd(view_counts):
@@ -48,19 +49,34 @@ def create_uploader_dict(reader):
 
 ### Main ###
 
-if len(sys.argv) < 3:
-    print("Specify an input file and output file. Usage:\n\tget_mean_sd.py <input_file> <out_filename>")
-    exit()
+# Arguments
+parser = argparse.ArgumentParser(description='Compute how many SD from average each video is.')
+parser.add_argument('input', metavar='in', help='input file')
+parser.add_argument('output', metavar='out', help='output file')
 
-with open(sys.argv[1]) as titles_views, open(sys.argv[2], 'w+') as output:
-    writer = DictWriter(output, fieldnames=['uploader', 'id', 'title', 'views', 'age', 'uploader_mean', 'uploader_sd', 'devs'])
+args = parser.parse_args()
+
+# Compute mean and SD and write a row for each video
+with open(args.input) as titles_views, open(args.output, 'w+') as output:
+    writer = DictWriter(output, fieldnames=['uploader', 'id', 'title', 'views', 'age', 'uploader_mean', 'uploader_sd', 'sds'])
     writer.writeheader()
 
-    reader = DictReader(titles_views)
-    uploader_dict = create_uploader_dict(reader)
+    # Stats
+    uploaders_processed = 0
+    videos_written = 0
+    
+    # Iterate through each uploader
+    uploader_dict = create_uploader_dict(DictReader(titles_views))
     for uploader, videos in uploader_dict.items():
-        num_videos = len([views for _, _, views, _ in videos])
-        if num_videos > 5:
+        if len(videos) > 5:
+
             mean, sd = compute_mean_sd([views for _, _, views, _ in videos])
-            for vid_id, title, views, age in videos:
-                writer.writerow(create_video_dict(uploader, vid_id, title, views, age, mean, sd))
+
+            # Iterate through each video and write a row for it
+            for video in videos:
+                writer.writerow(create_video_dict(uploader, mean, sd, video))
+                videos_written += 1
+
+            uploaders_processed += 1
+
+    print("Operation Complete: {} uploaders processed | {} videos written".format(uploaders_processed, videos_written))
