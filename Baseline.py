@@ -17,6 +17,23 @@ def unigramVector(title):
 
 
     return dictionary
+def bigramVector(title):
+    dictionary = {}
+    processed_title = html.unescape(title[2])
+    tw_list = nltk.word_tokenize(processed_title)
+    bigrams = nltk.bigrams(tw_list)
+    for bigram in bigrams:
+        dictionary[bigram] = True
+    return dictionary
+
+def firstFive(title):
+    dictionary = {}
+    processed_title = html.unescape(title[2])
+    tw_list = nltk.word_tokenize(processed_title)
+    bigrams = nltk.bigrams(tw_list)
+    for bigram in bigrams:
+        dictionary[bigram] = True
+    return dictionary
 
 def createVector(title, alltitles):
     """Creates a vector"""
@@ -71,10 +88,10 @@ def createFeatures(all_titles):
     features = [] #[Dictionary of features, Label]
     for line in all_titles:
         unigram_feature = unigramVector(line)
-
         #other features to add in
+        bigram_feature = bigramVector(line)
 
-        feature = unigram_feature # + ...
+        feature = {**bigram_feature, **unigram_feature} # + ...
 
         #label
         label = "Bad"
@@ -83,7 +100,6 @@ def createFeatures(all_titles):
 
         features.append(tuple([feature, label]))
 
-    print(features)
     return features
 
 
@@ -109,7 +125,30 @@ if __name__ == "__main__":
     test_features = createFeatures(random_test)
 
     title_classifier = trainBayes(random_train)
+    tp, tn, fp, fn = 0, 0, 0, 0
+    for x, y in test_features:
+        predict = title_classifier.classify(x)
+        if y == "Good":
+            #means true:
+            if predict == "Good":
+                tp += 1
+            else:
+                fn += 1
+        else:
+            if predict == "Bad":
+                tn += 1
+            else:
+                fp += 1
+
+    print(tp, tn, fp, fn)
+    precision = tp/(tp+fp)
+    recall = tp/(tp+fn)
+    f1 = 2*precision*recall/(precision+recall)
+    print("Precision: " + str(precision))
+    print("Recall: " + str(recall))
+    print("F1 :" + str(f1))
     print(nltk.classify.accuracy(title_classifier, test_features))
+
 
 
 
