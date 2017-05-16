@@ -1,16 +1,33 @@
-Top 2000 channels
-Removed 139 'VEVO' channels
-Removed 244 non-user channels
------------------------------
-1617 user channels
+DESCRIPTIONS:
+------------
+channel_urls:		the 2000 channels we took videos from
+
+raw_all:	 	all the raw video information
+
+processed_uni: 		compute mean and SD and filter young
+processed_english: 	compute mean and SD and filter young and non-English
 
 
-$ python get_mean_sd.py videos_raw_all.csv mean_sd_data.csv
+
+RAW DATA:
+--------
+ - Top 2000 channels
+ - Removed 139 'VEVO' channels
+ - Removed 244 non-user channels
+ -> 1617 user channels
+
+
+
+ANALYSIS (MEAN + SD):
+--------------------
   -> 1609 uploaders processed | 48114 videos written
 
-$ python post_process.py mean_sd_data.csv dataset_all_langs.csv
+
+FILTER:
+------
+Universal
   -> 45414 written | 2700 removed
 
-$ python post_process.py -l mean_sd_data.csv dataset_only_english.csv
+English Only
   -> 27998 written | 20116 removed
 
