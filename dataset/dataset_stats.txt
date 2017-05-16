@@ -1,12 +1,14 @@
 DESCRIPTIONS:
 ------------
-channel_urls:		the 2000 channels we took videos from
+channel_urls:	the 2000 channels we took videos from
 
-raw_all:	 	all the raw video information
+raw_all: 	all the raw video information
 
-processed_uni: 		compute mean and SD and filter young
-processed_english: 	compute mean and SD and filter young and non-English
+processed_uni:	compute mean and SD and filter young
+processed_eng: 	compute mean and SD and filter young and non-English
 
+tagged_uni:	tagged titles for the universal language dataset
+tagged_uni:	tagged titles for the English-only dataset
 
 
 RAW DATA:
@@ -30,4 +32,23 @@ Universal
 
 English Only
   -> 27998 written | 20116 removed
+
+
+TAGGING:
+-------
+Universal:
+  Test: 13625 tagged | 0 below | 4741 GOOD | 8884 BAD
+
+  Train:
+    0.00: 31789 tagged | 0 below     | 11148 GOOD | 20641 BAD
+    0.25: 24812 tagged | 6977 below  | 8533 GOOD  | 16279 BAD
+    0.50: 15725 tagged | 16064 below | 6652 GOOD  | 9073 BAD
+
+English:
+  Test: 8400 tagged | 0 below | 2869 GOOD | 5531 BAD
+  
+  Train:
+    0.00: 19598 tagged | 0 below     | 6631 GOOD | 12967 BAD
+    0.25: 15182 tagged | 4416 below  | 5037 GOOD | 10145 BAD
+    0.50: 9360 tagged  | 10238 below | 3899 GOOD | 5461 BAD
 
