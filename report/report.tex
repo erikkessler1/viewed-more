@@ -46,7 +46,7 @@ Every minute, hundreds of hours of video are uploaded to YouTube. How can YouTub
     \label{fig:motivation}
 \end{figure}
 
-There would be value for both YouTube and video uploaders alike if when a creator uploaded a video, the site could indicate the quality of the title and even suggest a better title that would draw more views. The goal of this project was to develop a system that could predict how a video would do based on different features of the title. Such a system could also be used to filter interesting titles towards the top of search results or towards the top of a suggested videos page. Furthermore, this could be extended to detect video titles that go to far and cross into the category of clickbait which YouTube might want to filter out to avoid disappointing and annoying users.
+There would be value for both YouTube and video uploaders alike if when a creator uploaded a video, the site could indicate the quality of the title and even suggest a better title that would draw more views. The goal of this project was to develop a system that could predict how a video would do based on different features of the title. Such a system could also be used to filter interesting titles towards the top of search results or towards the top of a suggested videos page. Furthermore, this could be extended to detect video titles that go too far and cross into the category of clickbait which YouTube might want to filter out to avoid disappointing and annoying users.
 
 \section{Related Work}
 Our interest in this project was initially sparked by Chenhao Tan, Lillian Lee, and Bo Pang's project \textit{Retweeted More} \cite{tan+lee+pang:14}. In \textit{Retweeted More}, they developed an algorithm for predicting which of two tweets on the same topic would receive more retweets. They found that wording does matter. There are features that improve the probability that a tweet will be retweeted. This finding suggests that we will find features in YouTube title wordings that influence the number of views. We also predict that the features that improve YouTube titles will differ from those that improve tweets which is why we were interested in expanding on that project to explore YouTube. Furthermore, for this existing work, creating a dataset of content and author controlled tweets while also controlling for other confounding effects such as when the tweets were sent was a major component of the project and as they creatively used tweets-pairs from the same account linking to the same content but with different wordings as natural experiments. We would need to find or create a similar dataset for YouTube videos. \\
@@ -63,9 +63,20 @@ We formulate our problem as a classification problem. We are looking to classify
 
 To do the classification, we will construct a feature vector for the title using a variety of features that we think would be useful for predicting how a title would perform. We can then use a set of labeled feature vectors to train a classifier and use that classifier to predict the quality of unseen titles.
 
+Because of our common sense and also findings by Lakkaraju, we know that the content of the video will affect the view-count. However, we want to hold as many variables constant as possible. In previous work, they were able to find duplicate tweets or images that had different titles. This simplified the classification problem so long as there were enough data points to determine which titles were better. This was why the clone-video dataset was especially promising. We believed we could use a similar approach as the retweeted more to determine which titles might be better. However, upon further investigation, we found that the videos were not all in English and were mostly trailers. The non-english trailers would deplete the number of videos in the dataset that we could actually use and we were concerned that because the videos were mostly trailers our product might be biased to only work for titles with 'trailer-ish' content. Even more, Lakkaraju also found they were unable to determine if differences between the videos were influenced by the user posting. This was especially problematic, where a heavily subscribed channel that posted a video would have a very high view-count for a particular title, but another one that might have a 'better' title would have a lower view count. For all of these reasons, we decided it best to try to standardize across channels.
+
+Instead of using the limited clone dataset, we chose to use to top YouTubers' most recent videos. These, we believed, would be the most relevant to our question for a few different reasons. First, it solved the problem of channel viewer influence. Instead of looking at individual videos, we would look at a particular channel's videos, where we could standardize across the channel, ranking each title as either 'good' or 'bad'. Further, we hypothesized that other factors including thumbnail picture quality, which appears with the title, should also be fairly consistent across a channel. However, we do lose 'content' control. In the clone video dataset, content between videos was the same. Here, content is different, which introduces variability between different titles simply on the premise of content. 
+
+
 \section{Architecture Overview}
-Provide an overview of your system, presenting and justifying important design
-choices such as algorithms, features, etc.
+Provide an overview of your system, presenting and justifying important design choices such as algorithms, features, etc.
+
+
+
+We decided to impose two different restrictions on the data. First, we wanted to get rid of most Title's of songs, so we got rid of any VEVO titles, or any titles that had detectable song names in them. We thought that removing songs from our dataset was important, since those titles lacked the creativity and variability we were hoping to capture. In other words, YouTube videos with titles attached are simply the titles of the song with the artist's name attached. 
+
+From there, we wanted to get rid of channels, or non-users. There were channels that included just \#MUSIC or \#POPULAR that we did not want in our dataset, so we decided to remove all channels from our dataset. 
+
 
 \begin{figure}[h]
     \centering
@@ -74,6 +85,9 @@ choices such as algorithms, features, etc.
     \label{fig:dataset}
 \end{figure}
 
+<<<<<<< HEAD
+Then, we wanted to rank each video as either a good video or a bad video, per viewer. 
+=======
 \begin{table}[h]
   \small
   \centering
@@ -101,6 +115,7 @@ choices such as algorithms, features, etc.
   \label{table:dataset-stats}
 \end{table}
 
+>>>>>>> 9490a69b0f898c3e823c4707b3ea52a99dd857c0
 
 \section{Experiments \& Analysis}
 Describe the dataset and the experiment setup. Compare the
@@ -108,9 +123,13 @@ performance of your system to that of a related work or other versions of your s
 possible!). As part of the analysis, examine the specific data points that are correctly classified by
 one but not others, instead of simply focusing on the final performance scores.
 
+
+
+To get a sense of how our model was performing related to other methods of prediction, we implemented an out of the box convolutional neural net to run on the data.  Yoon Kim showed that CNN's could perform very well on most sentence classification tasks, including movie reviews and binary labeled data. After running the a estimation of the value, we found that the accuracy of the results was approximately 65\%.
+
 \section{Limitations \& Future Work}
 Summarize the project (major findings, weaknesses, etc.) and describe an extension
-of the project that you’d like to try if you had more time.
+of the project that youâd like to try if you had more time.
 
 Future Work: Use descriptions, clickbait detection, larger dataset for even better CNN performance, different communities expect different things, title generation
 
