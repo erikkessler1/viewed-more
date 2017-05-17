@@ -49,3 +49,19 @@ To filter out non-English and young videos use:
 
 The labeled dataset is in the 'dataset' dir.
 There are datasets that include all languages and only English.
+
+
+
+### Building Classifiers ###
+
+To build a new classifier use the following command:
+   python src/classifying/train_classifier.py -b -s <save_location> -f unigram dataset/labeled_eng_train_t0_00.csv
+   
+Our trained classifiers are in the 'classifiers' directory.
+
+
+### Testing Classifiers ###
+
+To test a classifer use the following command:
+   python src/classifying/test_classifier.py -f unigram dataset/labeled_eng_test.csv classifiers/eng_t0_00_unigram.cls
+

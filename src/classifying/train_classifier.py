@@ -11,8 +11,8 @@ Either use the command line tool or call the train method directly.
 
 """
 
-def read_labled_titles(filename):
-    """ Reads a CSV file and returns list of labled titles.
+def read_labeled_titles(filename):
+    """ Reads a CSV file and returns list of labeled titles.
 
     Args:
       filename (string): path to the file
@@ -59,7 +59,7 @@ def train(training_filename, classifier_type, features, save_location=None):
     Returns:
       the trained classifier
     """
-    labeled_titles = read_labled_titles(training_filename)
+    labeled_titles = read_labeled_titles(training_filename)
     labeled_vectors = [(generate_feature_vector(title, features), label) for (title, label) in labeled_titles]
     classifier = classifier_type.train(labeled_vectors)
 
