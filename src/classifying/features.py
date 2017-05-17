@@ -32,8 +32,8 @@ def firstFive(title, vector):
 
 def colocWords(title, vector):
     word_list = nltk.word_tokenize(title)
-    for i in range(0, len(wordlist)):
-        vector["has ({}) at ({})".format(wordlist[i], i)] = True
+    for i in range(0, len(word_list)):
+        vector["has ({}) at ({})".format(word_list[i], i)] = True
 
 
 def colocPos(title, vector):

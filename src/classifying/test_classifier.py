@@ -9,7 +9,6 @@ Reports metrics and informative features as well.
 
 Useage:
   python test_classifier.py -f FEATURES [-v] [-i INFORMATIVE] <test_file> <classifier>
-    -f FEATURES: comma seperated list of features
     -v: Verbose - print all predicts
     -i INFORMATIVE: number of informative features to print
 """
@@ -27,7 +26,7 @@ def load_classifier(location):
 
 def evaluate(actual_predicts):
     """ Compute accuracy, precision, recall, and f1.
-    
+
     Args:
       actual_predicts: list of tuples (actual label, predicted label)
     Returns:
@@ -47,10 +46,11 @@ def evaluate(actual_predicts):
                 fp += 1
 
     acc = (tp + tn) / (tp + tn + fp + fn)
+    print(tp, fp, tn, fn)
     pre = tp / (tp + fp)
     rec = tp / (tp + fn)
     f1 = (2 * pre * rec) / (pre + rec)
-    
+
     return (acc, pre, rec, f1)
     
 def test(test_file, classifier_location):
@@ -59,7 +59,6 @@ def test(test_file, classifier_location):
     Args:
       test_file: location of file with labeled titles
       classifier_location: the saved classifier to use
-      features: list of features to use
     Returns:
       tuple with predictsion, metrics, and most informative features
     """
@@ -71,7 +70,7 @@ def test(test_file, classifier_location):
     predictions = [(t, v, l, classifier.classify(v)) for (t, v, l) in labeled_vectors]
     evaluation = evaluate([(t_label, p_label) for _, _, t_label, p_label in predictions])
     most_informative = classifier.most_informative_features(100)
-    
+
     return (predictions, evaluation, most_informative)
 
 
@@ -106,6 +105,3 @@ if __name__ == "__main__":
     print("\nMost Informative Features:\n--------------------------")
     for feature, _ in informative[0:args.informative]:
         print(feature)
-
-
-
