@@ -6,6 +6,9 @@ CSCI 375 Final Project: Viewed More
 Viewed More looks to classify YouTube video titles based on whether the title
 is likely to bring in more or fewer videos than average.
 
+To try it run:
+   python src/classifying/viewed_more.py classifiers/eng_t0_00_unigram.cls
+
 Directory Structure:
  - src/crawling: code for gathering the raw data
  - src/procecessing: code for analyzing, filtering, and labeling data
@@ -63,5 +66,6 @@ Our trained classifiers are in the 'classifiers' directory.
 ### Testing Classifiers ###
 
 To test a classifer use the following command:
-   python src/classifying/test_classifier.py -f unigram dataset/labeled_eng_test.csv classifiers/eng_t0_00_unigram.cls
+   python src/classifying/test_classifier.py dataset/labeled_eng_test.csv classifiers/eng_t0_00_unigram.cls
+
 
