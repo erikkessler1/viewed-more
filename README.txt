@@ -8,7 +8,7 @@ is likely to bring in more or fewer videos than average.
 
 Directory Structure:
  - src/crawling: code for gathering the raw data
- - src/procecessing: code for analyzing, filtering, and tagging data
+ - src/procecessing: code for analyzing, filtering, and labeling data
  - src/classifier: code for the classifier
  - dataset: title, view count dataset
  - report.pdf: our final writeup
@@ -34,9 +34,9 @@ The resulting raw dataset is in 'dataset/raw_all.csv'
 
 
 
-### Processing and Tagging ###
+### Processing and Labeling ###
 
-To tag video titles, we used the mean and SD of view counts for
+To label video titles, we used the mean and SD of view counts for
 each uploader then looked at how many SD from the mean each title was.
 
 To get the mean and SD values use:
@@ -47,5 +47,5 @@ To filter out non-English and young videos use:
    python processer.py <input_file> <output_file>
 
 
-The tagged dataset is in the 'dataset' dir.
+The labeled dataset is in the 'dataset' dir.
 There are datasets that include all languages and only English.
