@@ -45,10 +45,6 @@ Metrics:
 Accuracy: 0.5368 | Precision: 0.3892 | Recall: 0.6257 | F1: 0.4799
 
 
-
-
-
-
 Bigram
 
 00
@@ -103,4 +99,46 @@ Metrics:
 --------
 Accuracy: 0.6025 | Precision: 0.4183 | Recall: 0.4193 | F1: 0.4188
 
+
+TaggedWords
+00
+
+Metrics:
+--------
+Accuracy: 0.6075 | Precision: 0.4355 | Recall: 0.5033 | F1: 0.4669
+
+Colocational Words
+00
+
+Metrics:
+--------
+Accuracy: 0.578 | Precision: 0.4048 | Recall: 0.5012 | F1: 0.4479
+
+
+
+Bigrams + CAPS
+
+Metrics:
+--------
+Accuracy: 0.6121 | Precision: 0.4429 | Recall: 0.5263 | F1: 0.481
+
+
+
+CAPS
+
+Metrics:
+--------
+Accuracy: 0.6586 | Precision: 0.6667 | Recall: 0.0007 | F1: 0.0014
+
+
+Colocational (Words, POS)
+
+Metrics:
+--------
+Accuracy: 0.6473 | Precision: 0.3987 | Recall: 0.0645 | F1: 0.111
+
+Colocational Words and Colocational POS
+Metrics:
+--------
+Accuracy: 0.5777 | Precision: 0.4056 | Recall: 0.5078 | F1: 0.451
 
