@@ -38,15 +38,16 @@ def generate_feature_vector(title, features):
             feature_map[feature_name](title, feature_vector)
     return feature_vector
 
-def save_classifier(classifier, location):
+def save_classifier(classifier, features, location):
     """ Saves a classifier to the location specified.
 
     Args:
       classifier: the classifier to save
+      features: features used to generate the classifier
       location: path to file where wish to save the classifier
     """
     with open(location, 'wb') as save_file:
-        pickle.dump(classifier, save_file)
+        pickle.dump((classifier, features), save_file)
     
 def train(training_filename, classifier_type, features, save_location=None):
     """ Train a classifier with a set of features. 
@@ -64,7 +65,7 @@ def train(training_filename, classifier_type, features, save_location=None):
     classifier = classifier_type.train(labeled_vectors)
 
     if save_location:
-        save_classifier(classifier, save_location)
+        save_classifier(classifier, features, save_location)
         
     return classifier
 

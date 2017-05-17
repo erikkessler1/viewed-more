@@ -20,7 +20,7 @@ def load_classifier(location):
     Args:
       location: path to file
     Returns:
-      classifier
+      classifier, features
     """
     with open(location, 'rb') as file:
         return pickle.load(file)
@@ -53,7 +53,7 @@ def evaluate(actual_predicts):
     
     return (acc, pre, rec, f1)
     
-def test(test_file, classifier_location, features):
+def test(test_file, classifier_location):
     """ Classify titles in test file.
 
     Args:
@@ -64,7 +64,7 @@ def test(test_file, classifier_location, features):
       tuple with predictsion, metrics, and most informative features
     """
 
-    classifier = load_classifier(classifier_location)
+    classifier, features = load_classifier(classifier_location)
     labeled_titles = read_labeled_titles(test_file)
     labeled_vectors = [(title, generate_feature_vector(title, features), label) for (title, label) in labeled_titles]
 
@@ -79,14 +79,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Test a classifier.')
     parser.add_argument('test_file', help='CSV file with labeled titles')
     parser.add_argument('classifier', help='file of the classifier')
-    parser.add_argument('-f', dest='features', help='comma separated list of features to use', required=True)
     parser.add_argument('-v', dest='verbose', action='store_true', help='print full information')
     parser.add_argument('-i', dest='informative', type=int, default=5, help='number of most informative features to show')
 
     args = parser.parse_args()
 
     # Run the test
-    predictions, metrics, informative = test(args.test_file, args.classifier, args.features.split(','))
+    predictions, metrics, informative = test(args.test_file, args.classifier)
 
     # Print each prediction
     if args.verbose:
