@@ -81,11 +81,38 @@ From there, we wanted to get rid of channels, or non-users. There were channels 
 \begin{figure}[h]
     \centering
     \includegraphics[width=.99\textwidth]{dataset}
-    \caption{Diagram showing the dataset creation process resulting in 25k titles.}
+    \caption{Diagram showing the dataset creation process resulting in 45k total titles and 28k English titles.}
     \label{fig:dataset}
 \end{figure}
 
 Then, we wanted to rank each video as either a good video or a bad video, per viewer. 
+
+\begin{table}[h]
+  \small
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Universal}&&& \\ \hline \hline
+    \textit{Use} & \textit{SD Thresh.} & \textit{GOOD} & \textit{Total} \\ \hline 
+    Test & 0.00 & 4741 & 13625 \\ \hline
+    Train & 0.00 & 11148 & 31789 \\ \hline
+    Train & 0.25 & 8533 & 24812 \\ \hline
+    Train & 0.50 & 6652 & 15725 \\ \hline
+  \end{tabular}
+  \quad
+  \begin{tabular}{|l||l|l|l|}
+    \hline
+    \textbf{English-Only}&&& \\ \hline \hline
+    \textit{Use} & \textit{SD Thresh.} & \textit{GOOD} & \textit{Total} \\ \hline 
+    Test & 0.00 & 2869 & 8400 \\ \hline
+    Train & 0.00 & 6631 & 19598 \\ \hline
+    Train & 0.25 & 5037 & 15182 \\ \hline
+    Train & 0.50 & 3899 & 9360 \\ \hline
+  \end{tabular}
+
+  \caption{Table showing statistics on the dataset.}
+  \label{table:dataset-stats}
+\end{table}
 
 \section{Experiments \& Analysis}
 Describe the dataset and the experiment setup. Compare the
@@ -99,7 +126,9 @@ To get a sense of how our model was performing related to other methods of predi
 
 \section{Limitations \& Future Work}
 Summarize the project (major findings, weaknesses, etc.) and describe an extension
-of the project that you’d like to try if you had more time.
+of the project that youâd like to try if you had more time.
+
+Future Work: Use descriptions, clickbait detection, larger dataset for even better CNN performance, different communities expect different things, title generation
 
 \section{Conclusion}
 
