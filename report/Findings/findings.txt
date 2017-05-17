@@ -1,0 +1,106 @@
+Findings
+
+
+Format--
+Classifier type
+Data cutoff
+Metrics
+
+
+Unigram
+
+00
+Metrics:
+--------
+Accuracy: 0.6118 | Precision: 0.4389 | Recall: 0.4908 | F1: 0.4634
+
+25
+Metrics:
+--------
+Accuracy: 0.6025 | Precision: 0.4306 | Recall: 0.5085 | F1: 0.4664
+
+
+50
+
+Metrics:
+--------
+Accuracy: 0.5362 | Precision: 0.3824 | Recall: 0.5817 | F1: 0.4614
+
+	  
+Unigram + Bigram
+
+00
+Metrics:
+--------
+Accuracy: 0.6031 | Precision: 0.4411 | Recall: 0.6068 | F1: 0.5109
+
+25
+Metrics:
+--------
+Accuracy: 0.5968 | Precision: 0.4359 | Recall: 0.6142 | F1: 0.5099
+
+50
+Metrics:
+--------
+Accuracy: 0.5368 | Precision: 0.3892 | Recall: 0.6257 | F1: 0.4799
+
+
+
+
+
+
+Bigram
+
+00
+
+Metrics:
+--------
+Accuracy: 0.6148 | Precision: 0.4451 | Recall: 0.519 | F1: 0.4792
+
+25
+Metrics:
+--------
+Accuracy: 0.6118 | Precision: 0.4426 | Recall: 0.527 | F1: 0.4811
+
+50
+Metrics:
+--------
+Accuracy: 0.5619 | Precision: 0.3956 | Recall: 0.5354 | F1: 0.455
+
+firstFive 
+
+00
+Metrics:
+--------
+Accuracy: 0.6025 | Precision: 0.4183 | Recall: 0.4193 | F1: 0.4188
+
+25
+Metrics:
+--------
+Accuracy: 0.6057 | Precision: 0.4231 | Recall: 0.4245 | F1: 0.4238
+
+
+50
+Metrics:
+--------
+Accuracy: 0.5476 | Precision: 0.3769 | Recall: 0.497 | F1: 0.4287
+
+
+
+Unigram, bigram, ff
+
+00
+
+Metrics:
+--------
+Accuracy: 0.6025 | Precision: 0.4183 | Recall: 0.4193 | F1: 0.4188
+
+
+bigram, ff
+00
+
+Metrics:
+--------
+Accuracy: 0.6025 | Precision: 0.4183 | Recall: 0.4193 | F1: 0.4188
+
+
