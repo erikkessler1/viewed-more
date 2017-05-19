@@ -286,15 +286,18 @@ Accuracy: 0.5571 | Precision: 0.4104 | Recall: 0.625 | F1: 0.4955
 
 
 \section{Limitations \& Future Work}
-Summarize the project (major findings, weaknesses, etc.) and describe an extension of the project that you™d like to try if you had more time.
+We created a classifier that can detect when a title will be received better. Our classifier works best when the keywords are what make the title interesting. We found that using unigrams a features gave the best results, so we will be able to detect when a user is making good use of keywords or not. Our system is limited by the fact that there are many things not intrinsic to the title that make it an interesting title. One example is title creativity -- a creative or funny title will draw viewers however detecting these creative titles can be difficult. Another example of how there are aspects outside wording that influence how well a title does is that although we might predict that clickbaity sounding titles will do better that is not a perfect heuristic as we find some titles strutted as clickbait that do well and some the do poorly because they are on different topics. Although our classifier captures some aspect of topic popularity, topic popularity is not something intrinsic to the title, so our system needs some information about what currently trending topics are.
 
-Weaknesses. Content not controlled for. Can't tell between different wordings. However, titles that are significantly more important, we can tell fairly significantly which will be received better.
+One extension we considered was using Google Trend data to detect if the title was using terms that were popular at the moment. Since we found that using trending keywords was important for getting views, we thought having a feature that indicated whether or not a title used trending keywords would improve performance. An issue we ran into was querying Google Trends was slow and rate-limited, which meant training took a long time. However, we imagine Google, with better access to trends data, could include this popularity data if they were to build a similar classifier. 
 
-Future Work: Use descriptions to predict, create clickbait detection,  larger dataset for even better CNN performance, different communities expect different things,  
+Another limitation is that we don't factor in the community that the video is targeted to. Existing research indicates different communities expect different titles \cite{himabindu+mcauley+leskovec:13}. Looking at our data, we see that in the YouTube gaming community, all-caps titles help bring in more views. Our classifier however does not find that this is an important feature because in most other communities, all-caps titles are not beneficial. Therefore, we predict our system would perform better if we included the community that the video is targeted at. Future work might implement this by looking a the Category that a video is tagged as.
+
+
+One of the original goals of the project was to enable YouTube to build a tool for content creators that would give feedback on the quality of their title. Our classifier would help provide this functionality, but taking it a step further, it would be useful if the tool could offer suggested edits or even suggested titles. Future work could go into generating titles with some of the features that would help the video get more views.
 
 \section{Conclusion}
 
-This study uncovered some interesting results. First, the first few words of the title are very important to predicting success.  
+Using an off-the-shelf Naive Bayes classifier we were able to create a system that could predict if a title would bring in more views that average. Although interest in a title is in large part driven by factors not inherent to the wording or structure of the title which is what many of our features looked at, by incorporating trend data and community information we would likely be able to improve the performance of our system even further. With further tuning, out classifier could be at the core of a tool that allows content creators to test different formulations of their title or at the core of a tool that allows YouTube itself to filter more interesting titles to the top.
 
 
 \bibliographystyle{acm}
@@ -303,7 +306,7 @@ This study uncovered some interesting results. First, the first few words of the
 %\clearpage
 \appendix
 \section{Roles}
-Describe the roles of group members.
+Both Erik and Greg worked on this report and the dataset creation. Erik built the structure that allowed us to easily create, test, and evaluate classifiers with different configurations. Greg developed the features, created different classifier configurations, and ran experiments to test performance.
 
 
 
