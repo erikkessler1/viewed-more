@@ -1,28 +1,20 @@
 import nltk
-from pytrends.request import TrendReq
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 
-pytrends = None
-
-
+""" Colloection of different features. """
 
 def unigram(title, vector):
-    """ Unigram features. """
-
     word_list = nltk.word_tokenize(title)
     for word in word_list:
         vector["has({})".format(word)] = True
 
 def unigramNoStop(title, vector):
     word_list = nltk.word_tokenize(title)
-    """FINISH THIS"""
     stop = set(stopwords.words('english'))
     for word in word_list:
         if word not in stop:
              vector["has({})".format(word)] = True
-
-
 
 def bigram(title, vector):
     word_list = nltk.word_tokenize(title)
@@ -56,7 +48,6 @@ def colocWords(title, vector):
     for i in range(0, len(word_list)):
         vector["has ({}) at ({})".format(word_list[i], i)] = True
 
-
 def colocPos(title, vector):
     word_list = nltk.word_tokenize(title)
     taggedwords = nltk.pos_tag(word_list)
@@ -82,9 +73,14 @@ def lengthOfTitle(title, vector):
     num_words = len(word_list)
     vector["has ({}) number of words".format(num_words)] = True
 
+
+# Experimental and incomplete feaure that looks at Google Trend data
+# see future work section of report for more.
+pytrends = None
 def mostPopularKeywords(title, vector):
     global pytrends
     if not pytrends:
+        from pytrends.request import TrendReq
         from pytrends.request import TrendReq
         google_username = "NLPProject2017"
         google_password = "JonPark2017"
@@ -135,6 +131,4 @@ feature_map = {
     'caps':caps,
     'mostPopular': mostPopularKeywords,
     'unigramNoStop':unigramNoStop
-
-
 }

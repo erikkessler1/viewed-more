@@ -1,5 +1,7 @@
+nltk==3.2.2
 numpy==1.12.1
 polyglot==16.7.4
 pycld2==0.31
 PyICU==1.9.7
 six==1.10.0
+termcolor==1.1.0

@@ -7,7 +7,9 @@ Viewed More looks to classify YouTube video titles based on whether the title
 is likely to bring in more or fewer videos than average.
 
 To try it run:
-   python src/classifying/viewed_more.py classifiers/eng_t0_00_unigram.cls
+   python src/classifying/viewed_more.py classifiers/all-features.cls
+    - Try: 'No more fun' vs. 'Has Fun Ended?'
+
 
 Directory Structure:
  - src/crawling: code for gathering the raw data
