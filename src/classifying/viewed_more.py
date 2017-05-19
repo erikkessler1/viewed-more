@@ -3,7 +3,7 @@ from train_classifier import generate_feature_vector
 from test_classifier import load_classifier
 from termcolor import colored
 
-""" Utility that allows a user to test two different titles. 
+""" Utility that allows a user to test two different titles.
 
 Usage:
   python viewed_more.py <classifier>
@@ -32,7 +32,10 @@ if __name__ == "__main__":
 
         # Compute prob and check which is better
         title1_prob = classifier.prob_classify(title1_vector).prob('GOOD')
+        print(title1_prob)
+
         title2_prob = classifier.prob_classify(title2_vector).prob('GOOD')
+        print(title2_prob)
 
         if title1_prob > title2_prob:
             winner = title1

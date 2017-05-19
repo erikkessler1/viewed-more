@@ -144,32 +144,42 @@ We also wanted to determine what cutoff in the standard deviations would be the 
  \hline
  Type of Classifier and Cutoff & Accuracy & Precision & Recall & F1 \\ [0.5ex] 
  \hline
- Unigram 00 & 0.6118  & 0.4908  &0.4389  & 0.4634\\ 
+ English Unigram 00 & 0.6118  & 0.4908  &0.4389  & 0.4634\\ 
  \hline
- \textbf{Unigram .25} &  0.6025& 0.4306  & 0.5085  & \textbf{0.4664}\\ 
+ \textbf{English Unigram .25} &  0.6025& 0.4306  & 0.5085  & \textbf{0.4664}\\ 
 \hline
- Unigram .50 & 0.5362  & 0.3824  & 0.5817  & 0.4614\\ 
+ English Unigram .50 & 0.5362  & 0.3824  & 0.5817  & 0.4614\\ 
 \hline
   \hline
-\textbf{ Unigram + Bigram 00}& 0.6031  & 0.4411  & 0.6068  &\textbf{0.5109}\\
+\textbf{ English Unigram + Bigram 00}& 0.6031  & 0.4411  & 0.6068  &\textbf{0.5109}\\
  \hline
- Unigram + Bigram .25& 0.5968  & 0.4359  & 0.6142  &0.5099\\
+ English Unigram + Bigram .25& 0.5968  & 0.4359  & 0.6142  &0.5099\\
 \hline
- Unigram + Bigram .50& 0.5368  & 0.3892  & 0.6257  &0.4799\\
+ English Unigram + Bigram .50& 0.5368  & 0.3892  & 0.6257  &0.4799\\
 \hline
  \hline
- 
-Bigram 00 & 0.6148  & .4451  & 0.519  &0.4792\\
+ \textbf{ Universal Unigram + Bigram 00}& 0.6103  & 0.4533  & 0.583  &\textbf{0.5101}\\
+ \hline
+ Universal Unigram + Bigram .25& 0.6057  & 0.449  & 0.5857  &0.5083\\
 \hline
-\textbf{Bigram  0.25}& 0.6118  & 0.4426  & 0.527  &\textbf{0.4811}\\
+ Universal Unigram + Bigram .50& 0.5571  & 0.4104  & 0.625  &0.4955\\
 \hline
-Bigram 0.50 & 0.5619  & 0.3956  & 0.5354  & 0.455\\
+ \hline
+English Bigram 00 & 0.6148  & .4451  & 0.519  &0.4792\\
+\hline
+\textbf{English Bigram  0.25}& 0.6118  & 0.4426  & 0.527  &\textbf{0.4811}\\
+\hline
+English Bigram 0.50 & 0.5619  & 0.3956  & 0.5354  & 0.455\\
 \hline
 
 \end{tabular}
 \end{center}
 
-From the findings above, off of just a few feature vectors, we found that there were marginal differences between the 0.25 cutoff and the 0.0 cutoff point. However, because the cutoff where we only accepted values that were 0.25 standard deviations away from the mean, ie removing some values that are just "average" titles, so we proceeded to check a number of different feature vectors using a 0.25 cutoff for our standard deviations. \\
+
+From the findings above, off of just a few feature vectors, we found that there were marginal differences between the 0.25 cutoff and the 0.0 cutoff point. However, because the cutoff where we only accepted values that were 0.25 standard deviations away from the mean, ie removing some values that are just "average" titles, so we proceeded to check a number of different feature vectors using a 0.25 cutoff for our standard deviations. 
+
+Further we saw that results from classifiers trained on the Universal set performed approximately as well as ones that were not trained on the english set. Due to the larger sample size of videos that were not necessarily all in English, we find that the universal set does better. However, as Universal does not perform substantially better than the English version, we will continue to use the English version.\\
+
 
 Lines looking at particular instances where the two disagree:\\
 \\
@@ -193,8 +203,6 @@ Now, we wanted to then create a number of different features to train our model 
 \end{itemize}
 
 \textbf{Results from tests}\\
-
-Interestingly, the first five words played a very similar role to the unigram feature. Shown below, the two have very similar accuracy, though they differ more on their F1 scores. Although the two cannot be entirely separated, it appears as though the first five words of the title are influential on the view-count of the video. 
 
 \begin{center}
  \begin{tabular}{|c| c| c| c| c|} 
@@ -220,10 +228,25 @@ Interestingly, the first five words played a very similar role to the unigram fe
 \end{center}
 
 
-Look at particular instances were First Five fails but the full one succeeds. Explanations?\\
-\\
+Interestingly, the first five words played a very similar role to the unigram feature. Shown below, the two have very similar accuracy, though they differ more on their F1 scores. Although we cannot draw any significant conclusions about how much of the title's importance is captured in the first five words of it, it certainly appears that much of the importance of the title that we can track is captured in the first five words.
 \\
 
+Unigram vs First Five:
+
+\begin{itemize}
+		\item \textit{Bounce Factory | FrontRow | World of Dance Italy Qualifier 2017 | \#WODIT17} \\
+	Actual: GOOD | Unigram Predicted: BAD (0.415), First Five Predicted: GOOD (0.830).
+	
+	\item \textit{How To Tell If Your Crush Likes You}\\
+	 Actual: GOOD | Unigram Predicted: GOOD( 0.651), First Five Predicted: BAD (0.240).
+ 
+ \end{itemize}
+ 
+ As we can see from the above examples, some titles get bogged down in a lot of excess words that does not add much to the title's meaning. Bounce-Factory and Front-Row are both captivating titles that grab the attention, and the unigram approach, by factoring all of the values in, seems to add in the unimportance of some of the later words in the title.
+ 
+ On the other hand, some important words can come later in the title as well. Looking at "How to tell if your crush likes you, we see that much of the first five words are unimportant and unsubstantial, being "How To Tell if Your." Here, instead of being bogged down with information, the unigram seems to capture more important information, like the words "Crush likes you", which are understandably far more important than the five predecessor words. \\
+ 
+ More results are listed below, from all of the other parameters we ran to try to find trends in the titles.
 
 \begin{center}
  \begin{tabular}{|c| c| c| c| c|} 
@@ -234,55 +257,28 @@ Look at particular instances were First Five fails but the full one succeeds. Ex
  \hline
  Collocational Words & 0.5936  & 0.428  &0.4986  & 0.4606\\
  \hline
- Collocational POS & ---  & ---  &---  & ---\\
- \hline
 Collocational Words and POS & 0.5869& 0.4239 & 0.5208& 0.4673\\
 \hline
- Capitalized Words & 0.6522  & 0.75 & 0.0006 &F1: 0.0013\\
+ Capitalized Words & 0.6522  & 0.75 & 0.0006 & 0.0013\\
  \hline
  Collocational (Words, POS)& 0.6315 & 0.3891 & 0.1036 & 0.1636\\
  \hline
  Unigram (No Stop Words) & 0.6098 & 0.4467 &0.509& 0.4758\\
  \hline
+ Tagged Words and Bigrams & 0.5885 & 0.4283 & 0.6121& 0.5039\\
+ \hline
+ All &0.5829 & 0.4271 & 0.6487 &0.5151\\
+
+ \hline
 
 \end{tabular}
 \end{center}
 
-taggeds words no stop words
-Metrics:
---------
-Accuracy: 0.6001 | Precision: 0.4302 | Recall: 0.526 | F1: 0.4733
+Without surprise, tagged words seemed to improve accuracy over unigrams, due to the extra information attached to the unigram. However, the unigram-bigram filter still performs the best, regarding F1 scores. More explanation?
 
-Explanation of the findings from above. Any significant meaning? \\ 
-In particular, tagged words are better than unigrams. Surprise? Try tagged words with bigrams?
+Like the CNN, a few of the classifiers had very high accuracies simply due to labeling all values as false. For instance, the classifier just built using capitalized words had an incredibly low recall, and similarly low F1. The same is true for collocational tagged words.  
 
-Results of Universals\\
-
-UNIVERSAL
-
-Unigram-bigram:
-
-Metrics:
---------
-Accuracy: 0.6103 | Precision: 0.4533 | Recall: 0.583 | F1: 0.5101
-
-25
-Metrics:
---------
-Accuracy: 0.6057 | Precision: 0.449 | Recall: 0.5857 | F1: 0.5083
-
-50
-Metrics:
---------
-Accuracy: 0.5571 | Precision: 0.4104 | Recall: 0.625 | F1: 0.4955
-
-
-
-
-
-
-
-
+Also notably, we ran the function with all of the predictors, as well. It had a very high recall, indicating that 
 
 
 \section{Limitations \& Future Work}
