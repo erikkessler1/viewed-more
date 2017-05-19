@@ -142,3 +142,26 @@ Metrics:
 --------
 Accuracy: 0.5777 | Precision: 0.4056 | Recall: 0.5078 | F1: 0.451
 
+
+
+
+
+UNIVERSAL
+
+Unigram-bigram:
+00
+Metrics:
+--------
+Accuracy: 0.6103 | Precision: 0.4533 | Recall: 0.583 | F1: 0.5101
+
+25
+Metrics:
+--------
+Accuracy: 0.6057 | Precision: 0.449 | Recall: 0.5857 | F1: 0.5083
+
+50
+Metrics:
+--------
+Accuracy: 0.5571 | Precision: 0.4104 | Recall: 0.625 | F1: 0.4955
+
+

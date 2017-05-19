@@ -1,3 +1,4 @@
+
 \documentclass[a4paper,12pt]{article}
 
 %% PACKAGES %%
@@ -69,7 +70,7 @@ Instead of using the limited clone dataset, we chose to use to top YouTubers' mo
 
 
 \section{Architecture Overview}
-Provide an overview of your system, presenting and justifying important design choices such as algorithms, features, etc.
+Provide an overview of your system, presenting and justifying important design choices such as algorithms, features, etc.\\
 
 
 
@@ -85,7 +86,9 @@ From there, we wanted to get rid of channels, or non-users. There were channels 
     \label{fig:dataset}
 \end{figure}
 
-Then, we wanted to rank each video as either a good video or a bad video, per viewer. 
+Then, we wanted to rank each video as either a good video or a bad video, per channel. So for each channel, we calculated the mean and the standard deviation of the view counts. We labelled any video that had a positive standard deviation count as a "GOOD" video, and any video that had a negative standard deviation count as a "BAD" video. The counts of videos after this filtering is listed below. 
+
+We then split the two data sets into English only groups and Universal groups, where we filtered any non-English title out in the English only section. However, the program doing this was not entirely accurate, so some videos in the group are not English, but these videos are limited in number, and we believed would not play a significant role in title detection. But to safeguard against poor English results, we created the Universal group, which did not filter by language. 
 
 \begin{table}[h]
   \small
@@ -114,7 +117,13 @@ Then, we wanted to rank each video as either a good video or a bad video, per vi
   \label{table:dataset-stats}
 \end{table}
 
+From this dataset, we labelled each title as either "GOOD" or "BAD". We then constructed a multitude of different feature vectors to determine the best way to build our classifier, using the NLTK Naive Bayes classifier. 
+
+From there, we took the best classifier and built a title comparer, which, given two titles, would give the user the better title out of the two. 
+
+
 \section{Experiments \& Analysis}
+
 Describe the dataset and the experiment setup. Compare the
 performance of your system to that of a related work or other versions of your system (both if
 possible!). As part of the analysis, examine the specific data points that are correctly classified by
@@ -122,15 +131,171 @@ one but not others, instead of simply focusing on the final performance scores.
 
 
 
-To get a sense of how our model was performing related to other methods of prediction, we implemented an out of the box convolutional neural net to run on the data.  Yoon Kim showed that CNN's could perform very well on most sentence classification tasks, including movie reviews and binary labeled data. After running the a estimation of the value, we found that the accuracy of the results was approximately 65\%.
+We began our experiment with a baseline approximation of the best titles, building our classifier using just unigrams. Its performance was fairly good, approximately 60\% accuracy, with an F1 score of closer to 0.46.
+
+We also wanted to see what might be possible with some other out-of-the-box classifiers.
+
+After doing a bit of research, we found that  Yoon Kim showed that CNN's could perform better than most other models on particular sentence classification tasks, including movie reviews and binary labeled data. Since our data was binary labeled, we thought his classification system might give an upper bound on what we might be able to achieve. After running the a estimation of the value, we found that the accuracy of the results was approximately 65\%. However, this result was only labelling all of the values as "BAD" titles, giving a very low F1, and low recall. In other words, our baseline was performing better than this out of the box function off the bat.
+
+We also wanted to determine what cutoff in the standard deviations would be the best for our classifier. So we ran a few different experiments to determine which cutoff would be the best. 
+ 
+\begin{center}
+ \begin{tabular}{|c| c| c| c| c|} 
+ \hline
+ Type of Classifier and Cutoff & Accuracy & Precision & Recall & F1 \\ [0.5ex] 
+ \hline
+ Unigram 00 & 0.6118  & 0.4908  &0.4389  & 0.4634\\ 
+ \hline
+ \textbf{Unigram .25} &  0.6025& 0.4306  & 0.5085  & \textbf{0.4664}\\ 
+\hline
+ Unigram .50 & 0.5362  & 0.3824  & 0.5817  & 0.4614\\ 
+\hline
+  \hline
+\textbf{ Unigram + Bigram 00}& 0.6031  & 0.4411  & 0.6068  &\textbf{0.5109}\\
+ \hline
+ Unigram + Bigram .25& 0.5968  & 0.4359  & 0.6142  &0.5099\\
+\hline
+ Unigram + Bigram .50& 0.5368  & 0.3892  & 0.6257  &0.4799\\
+\hline
+ \hline
+ 
+Bigram 00 & 0.6148  & .4451  & 0.519  &0.4792\\
+\hline
+\textbf{Bigram  0.25}& 0.6118  & 0.4426  & 0.527  &\textbf{0.4811}\\
+\hline
+Bigram 0.50 & 0.5619  & 0.3956  & 0.5354  & 0.455\\
+\hline
+
+\end{tabular}
+\end{center}
+
+From the findings above, off of just a few feature vectors, we found that there were marginal differences between the 0.25 cutoff and the 0.0 cutoff point. However, because the cutoff where we only accepted values that were 0.25 standard deviations away from the mean, ie removing some values that are just "average" titles, so we proceeded to check a number of different feature vectors using a 0.25 cutoff for our standard deviations. \\
+
+Lines looking at particular instances where the two disagree:\\
+\\
+\\
+\\
+
+\textbf{LOOK AT OTHER CUTOFFS?} \\
+
+
+
+Features\\
+
+Now, we wanted to then create a number of different features to train our model on, to see which performed best and see if we could improve upon our baseline of just unigrams. We came up with a few features in addition to unigram and bigram features, which are listed below: 
+\begin{itemize}
+    \item First Five words - YouTube best practices states that a good title should have the most important words at the beginning of the title, since search results weights the beginning of the title heavier than results at the end. We wanted to see if we could make predictions on just the first five words, the beginning words, of a title.
+  \item Collocational words - On the same idea as above, we wanted to know does the location of a particular word give any insight into the popularity of a YouTube title.
+  \item Collocational POS - We wanted to know does starting a video with a particular POS, or have a particular POS in a particular spot in the title help increase view-count.
+  \item Collocational (Words with POS)
+  \item POS-tagged words - Perhaps particular words, given some particular tag, are more likely to be in a "more important" video.
+  \item Capitalized words- We wanted to know if having an urgent looking title increase the likelihood that a particular video is clicked on.
+\end{itemize}
+
+\textbf{Results from tests}\\
+
+Interestingly, the first five words played a very similar role to the unigram feature. Shown below, the two have very similar accuracy, though they differ more on their F1 scores. Although the two cannot be entirely separated, it appears as though the first five words of the title are influential on the view-count of the video. 
+
+\begin{center}
+ \begin{tabular}{|c| c| c| c| c|} 
+ \hline
+ Type of Classifier and Cutoff & Accuracy & Precision & Recall & F1 \\ [0.5ex] 
+\hline
+ Unigram 00 & 0.6118  & 0.4908  &0.4389  & 0.4634\\ 
+ \hline
+ {Unigram .25} &  0.6025& 0.4306  & 0.5085  & {0.4664}\\ 
+\hline
+ Unigram .50 & 0.5362  & 0.3824  & 0.5817  & 0.4614\\ 
+\hline
+  \hline
+
+ \hline
+ First Five 00 & 0.6025  & 0.4183  &0.4193  & 0.4188\\ 
+ \hline
+ {First Five .25} &  0.6057& 0.4231  & 0.4245  & {0.4238}\\ 
+\hline
+ First Five .50 & 0.5476  & 0.3769  & 0.497  & 0.4287\\ 
+ \hline
+\end{tabular}
+\end{center}
+
+
+Look at particular instances were First Five fails but the full one succeeds. Explanations?\\
+\\
+\\
+
+
+\begin{center}
+ \begin{tabular}{|c| c| c| c| c|} 
+ \hline
+ Type of Classifier & Accuracy & Precision & Recall & F1 \\ [0.5ex] 
+\hline
+ Tagged-Words  & 0.6118  & 0.4488  &0.5062  & 0.4758\\ 
+ \hline
+ Collocational Words & 0.5936  & 0.428  &0.4986  & 0.4606\\
+ \hline
+ Collocational POS & ---  & ---  &---  & ---\\
+ \hline
+Collocational Words and POS & 0.5869& 0.4239 & 0.5208& 0.4673\\
+\hline
+ Capitalized Words & 0.6522  & 0.75 & 0.0006 &F1: 0.0013\\
+ \hline
+ Collocational (Words, POS)& 0.6315 & 0.3891 & 0.1036 & 0.1636\\
+ \hline
+ Unigram (No Stop Words) & 0.6098 & 0.4467 &0.509& 0.4758\\
+ \hline
+
+\end{tabular}
+\end{center}
+
+taggeds words no stop words
+Metrics:
+--------
+Accuracy: 0.6001 | Precision: 0.4302 | Recall: 0.526 | F1: 0.4733
+
+Explanation of the findings from above. Any significant meaning? \\ 
+In particular, tagged words are better than unigrams. Surprise? Try tagged words with bigrams?
+
+Results of Universals\\
+
+UNIVERSAL
+
+Unigram-bigram:
+
+Metrics:
+--------
+Accuracy: 0.6103 | Precision: 0.4533 | Recall: 0.583 | F1: 0.5101
+
+25
+Metrics:
+--------
+Accuracy: 0.6057 | Precision: 0.449 | Recall: 0.5857 | F1: 0.5083
+
+50
+Metrics:
+--------
+Accuracy: 0.5571 | Precision: 0.4104 | Recall: 0.625 | F1: 0.4955
+
+
+
+
+
+
+
+
+
 
 \section{Limitations \& Future Work}
-Summarize the project (major findings, weaknesses, etc.) and describe an extension
-of the project that youâd like to try if you had more time.
+Summarize the project (major findings, weaknesses, etc.) and describe an extension of the project that you�d like to try if you had more time.
 
-Future Work: Use descriptions, clickbait detection, larger dataset for even better CNN performance, different communities expect different things, title generation
+Weaknesses. Content not controlled for. Can't tell between different wordings. However, titles that are significantly more important, we can tell fairly significantly which will be received better.
+
+Future Work: Use descriptions to predict, create clickbait detection,  larger dataset for even better CNN performance, different communities expect different things,  
 
 \section{Conclusion}
+
+This study uncovered some interesting results. First, the first few words of the title are very important to predicting success.  
+
 
 \bibliographystyle{acm}
 \bibliography{bibfile}

@@ -1,4 +1,11 @@
 import nltk
+from pytrends.request import TrendReq
+from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+
+pytrends = None
+
+
 
 def unigram(title, vector):
     """ Unigram features. """
@@ -6,6 +13,16 @@ def unigram(title, vector):
     word_list = nltk.word_tokenize(title)
     for word in word_list:
         vector["has({})".format(word)] = True
+
+def unigramNoStop(title, vector):
+    word_list = nltk.word_tokenize(title)
+    """FINISH THIS"""
+    stop = set(stopwords.words('english'))
+    for word in word_list:
+        if word not in stop:
+             vector["has({})".format(word)] = True
+
+
 
 def bigram(title, vector):
     word_list = nltk.word_tokenize(title)
@@ -16,8 +33,12 @@ def bigram(title, vector):
 def taggedWords(title, vector):
     word_list = nltk.word_tokenize(title)
     taggedwords = nltk.pos_tag(word_list)
+    stop = set(stopwords.words('english'))
+
     for taggedword in taggedwords:
-        vector["has({})".format(taggedword)] = True
+        if taggedword[0] not in stop:
+            vector["has({})".format(taggedword)] = True
+
 
 def posTags(title, vector):
     word_list = nltk.word_tokenize(title)
@@ -56,6 +77,51 @@ def caps(title, vector):
             num_caps += 1
     vector["has ({}) capitalized words".format(num_caps)] = True
 
+def lengthOfTitle(title, vector):
+    word_list = nltk.word_tokenize(title)
+    num_words = len(word_list)
+    vector["has ({}) number of words".format(num_words)] = True
+
+def mostPopularKeywords(title, vector):
+    global pytrends
+    if not pytrends:
+        from pytrends.request import TrendReq
+        google_username = "NLPProject2017"
+        google_password = "JonPark2017"
+        pytrends = TrendReq(google_username, google_password, hl='en-US', tz=360, custom_useragent=None)
+
+    rel_sum_of_indices = 0
+    abs_sum_of_indices = 0
+
+    stop = set(stopwords.words('english'))
+    word_list = nltk.word_tokenize(title)
+    for word in word_list:
+        if word not in stop:
+            word = word.lower()
+            syns = list(set([word] + [y.lemma_names()[0] for y in wn.synsets(word)] ))
+            kw_list = syns[0:min(5, len(syns))]
+            if len(kw_list) > 1:
+                pytrendsbuild = pytrends.build_payload(kw_list, cat=0, timeframe='today 5-y', geo='', gprop='')
+                results = [(keyword, pytrends.interest_over_time().iloc[-1][keyword]) for keyword in kw_list]
+
+                results.sort(key=lambda x: (-x[1]))
+                try:
+                    index = [x for x, y in enumerate(results) if y[0].lower() == word.lower()][0]
+                except:
+                    index = 4
+
+                rel_sum_of_indices += 1/(int(index) + 1)
+                abs_sum_of_indices += pytrends.interest_over_time().iloc[-1][word]
+
+
+
+    vector["Sum of relative indexed popularity: {}".format(rel_sum_of_indices)] = True
+    print(rel_sum_of_indices, abs_sum_of_indices)
+    vector["Sum of absolute indexed popularity: {}".format(abs_sum_of_indices)] = True
+
+
+
+
 
 feature_map = {
     'unigram': unigram,
@@ -66,7 +132,9 @@ feature_map = {
     'colocWords': colocWords,
     'colocPos': colocPos,
     'colocWordsPos':colocWordsPos,
-    'caps':caps
+    'caps':caps,
+    'mostPopular': mostPopularKeywords,
+    'unigramNoStop':unigramNoStop
 
 
 }
